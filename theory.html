@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>DES Theory</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 30px;
+      line-height: 1.7;
+      background: #f8f8f8;
+      color: #222;
+    }
+    h1, h2 {
+      color: #003366;
+    }
+    img {
+      max-width: 100%;
+      height: auto;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+    .back-button {
+      background-color: #003366;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 30px;
+      font-size: 18px;
+      transition: background-color 0.3s, transform 0.2s ease-in-out;
+    }
+    .back-button:hover {
+      background-color: #0055aa;
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+
+<h1>Data Encryption Standard (DES): Extended Theory</h1>
+
+<h2>What is DES?</h2>
+<p>
+  The <strong>Data Encryption Standard (DES)</strong> is one of the most historically significant symmetric-key algorithms in the field of cryptography. Introduced in the 1970s, it set a global precedent for secure electronic communication. It functions as a <strong>symmetric block cipher</strong>, which means the same key is used for both encryption and decryption, and data is processed in fixed-size blocks—in this case, 64 bits at a time.
+</p>
+
+<h2>Who Invented DES and When?</h2>
+<p>
+  DES was developed by <strong>IBM</strong> in the early <strong>1970s</strong>, based on their internal project named <em>Lucifer</em>. The U.S. National Bureau of Standards (now NIST) adopted it as a federal standard in <strong>1977</strong> for non-classified governmental and commercial use. The algorithm was reviewed and modified with input from the <strong>NSA</strong> before becoming a standard.
+</p>
+
+<h2>Why Was DES Created?</h2>
+<p>
+  During the 1970s, with the rise of computing in business and government, there was a growing need to protect digital information. Before DES, there was no widely accepted method for encrypting data electronically. DES provided a standardized and vetted method for ensuring confidentiality, which was especially crucial in banking, telecommunications, and government communication.
+</p>
+
+<h2>Basic Parameters of DES</h2>
+<ul>
+  <li><strong>Block size:</strong> 64 bits (plaintext and ciphertext)</li>
+  <li><strong>Key size:</strong> 64 bits, but only <strong>56 bits</strong> are used for actual encryption; the remaining 8 bits are parity checks.</li>
+  <li><strong>Number of rounds:</strong> 16</li>
+  <li><strong>Structure:</strong> Feistel network</li>
+  <li><strong>Type:</strong> Symmetric block cipher</li>
+</ul>
+
+<h2>How Does DES Work? Step-by-Step Process</h2>
+<ol>
+  <li><strong>Initial Permutation (IP):</strong> Rearranges the bits of the 64-bit plaintext block using a predefined table to enhance diffusion.</li>
+  <li><strong>Splitting:</strong> The block is divided into two halves: Left (L) and Right (R), each 32 bits.</li>
+  <li><strong>Key Schedule:</strong> The 56-bit key is processed to generate 16 unique 48-bit subkeys for the 16 rounds.</li>
+  <li><strong>Feistel Rounds (16 rounds):</strong> Each round consists of:
+    <ul>
+      <li>Expanding R from 32 to 48 bits (E-expansion)</li>
+      <li>XORing expanded R with the round key</li>
+      <li>Passing the result through 8 S-boxes (each mapping 6 bits to 4 bits)</li>
+      <li>Permuting the result using a P-box</li>
+      <li>XORing the output with L, and swapping halves</li>
+    </ul>
+  </li>
+  <li><strong>Final Permutation (IP⁻¹):</strong> The final output of the 16th round is permuted again to produce the ciphertext.</li>
+</ol>
+
+<img src="images/kih.png" alt="DES Overview Diagram" />
+
+<h2>The Key Schedule in Detail</h2>
+<p>
+  The original 64-bit key undergoes PC-1 permutation to remove parity bits, resulting in 56 bits. These bits are split into two 28-bit halves, each of which is shifted according to a schedule and permuted again with PC-2 to generate 48-bit subkeys used in each of the 16 rounds.
+</p>
+
+<h2>The S-Boxes and Confusion</h2>
+<p>
+  One of the key cryptographic strengths of DES lies in its S-boxes, which introduce <strong>non-linearity</strong>. Each 6-bit input to an S-box is mapped to a 4-bit output. This substitution is irreversible, and it ensures that small changes in the input produce significant changes in the output, a principle known as the <em>avalanche effect</em>.
+</p>
+
+<h2>ASCII and Binary in DES</h2>
+<p>
+  Since DES operates on binary data, textual input must first be converted using the <strong>ASCII table</strong>. Each ASCII character is represented by a unique 7- or 8-bit binary code.
+</p>
+<img src="images/ascii-table.png" alt="ASCII Table" />
+
+<h2>Security Concerns and Legacy</h2>
+<p>
+  By the late 1990s, DES had become vulnerable to <strong>brute-force attacks</strong> due to its 56-bit key. In 1998, the Electronic Frontier Foundation built a machine that cracked DES in under 24 hours. As a result, DES was deprecated for many uses and replaced by more secure alternatives like <strong>Triple DES (3DES)</strong> and eventually <strong>AES</strong>.
+</p>
+
+<h2>Key Quiz Answers in Context</h2>
+<ul>
+  <li><strong>1. Block size:</strong> 64 bits ✅</li>
+  <li><strong>2. Number of rounds:</strong> 16 ✅</li>
+  <li><strong>3. Key size:</strong> 56 bits ✅</li>
+  <li><strong>4. Cipher type:</strong> Block cipher ✅</li>
+  <li><strong>5. Modern security:</strong> No, it is no longer secure ✅</li>
+  <li><strong>6. DES means:</strong> Data Encryption Standard ✅</li>
+  <li><strong>7. Developer:</strong> IBM ✅</li>
+  <li><strong>8. Vulnerability:</strong> Short key length ✅</li>
+  <li><strong>9. Variant:</strong> 3DES ✅</li>
+  <li><strong>10. "S" stands for:</strong> Standard ✅</li>
+</ul>
+
+<p>
+  Despite its age, DES remains a foundational concept in cryptography education, and understanding it helps grasp how modern ciphers like AES build upon similar principles.
+</p>
+
+<button class="back-button" onclick="window.location.href='popytka12.html'">← Back to Main</button>
+
+</body>
+</html>

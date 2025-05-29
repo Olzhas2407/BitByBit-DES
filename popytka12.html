@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DES Educational Tool</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      font-family: Arial, sans-serif;
+      background: #ffffff;
+      color: #000000;
+      font-size: 20px;
+    }
+
+    .container {
+      width: 100%;
+      height: calc(100vh - 60px);
+      overflow-y: auto;
+      margin: auto;
+      padding: 30px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #ccc;
+      font-size: 28px; /* чуть меньше чем было */
+      line-height: 1.6;
+    }
+
+    h1 {
+      text-align: center;
+      color: #000;
+      font-size: 32px;
+    }
+
+    .top-left-buttons, .top-right-buttons {
+      position: fixed;
+      top: 10px;
+      display: flex;
+      gap: 12px;
+      z-index: 1000;
+    }
+
+    .top-left-buttons {
+      left: 10px;
+    }
+
+    .top-right-buttons {
+      right: 10px;
+    }
+
+    .floating-button {
+      background-color: #003366;
+      color: white;
+      padding: 16px 24px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 20px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.3s ease, transform 0.1s ease;
+    }
+    #tutorialContainer .floating-button {
+      font-size: 25px !important;
+      padding: 16px 24px !important;
+    }
+
+    .floating-button:hover {
+      background-color: #0055aa;
+      transform: scale(1.05);
+    }
+
+    .quiz-box {
+      margin-top: 40px;
+    }
+
+    .quiz-question {
+      font-weight: bold;
+      font-size: 20px; /* уменьшен */
+    }
+
+    .quiz-option {
+      display: block;
+      margin: 10px 0;
+      padding: 14px;
+      background: #eee;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 20px; /* уменьшен */
+      color: #000;
+      transition: background-color 0.3s ease;
+    }
+
+    .quiz-option:hover {
+      background: #ddd;
+    }
+
+    .quiz-option.correct {
+      background-color: #c8f7c5;
+    }
+
+    .quiz-option.incorrect {
+      background-color: #f8d7da;
+    }
+
+    .quiz-feedback {
+      margin-top: 14px;
+      font-style: italic;
+      color: #007700;
+      font-size: 20px; /* уменьшен */
+    }
+
+    #languageSelector {
+      padding: 12px;
+      font-size: 18px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    /* Выделение подзаголовков под квизом */
+    .substep-title {
+      font-size: 22px; /* Увеличен */
+      font-weight: bold;
+      margin-top: 40px;
+      margin-bottom: 10px;
+      color: #222;
+    }
+    .step-description {
+      font-size: 22px; /* увеличь с текущего значения до нужного */
+      line-height: 1.6;
+      margin-top: 15px;
+      text-align: center;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    #asciiTools textarea {
+      width: 100%;
+      font-family: monospace;
+      padding: 10px;
+    }
+
+    #binaryOutput {
+      white-space: pre-wrap;
+      margin-top: 10px;
+      background: #f0f0f0;
+      padding: 10px;
+      font-family: monospace;
+    }
+
+    .substep-text {
+      font-size: 22px; /* Увеличен */
+      margin-bottom: 20px;
+    }
+  </style>
+
+
+
+
+
+</head>
+<body>
+<div class="top-left-buttons">
+  <button class="floating-button" onclick="openTutorial()">Tutorial</button>
+  <button class="floating-button" onclick="toggleQuiz()">Quiz</button>
+  <button class="floating-button" onclick="openTheory()">Theory</button>
+  <button class="floating-button" onclick="toggleAsciiTools()">ASCII Tools</button>
+
+</div>
+
+
+<div class="container">
+  <h1 id="title">DES Visual Educational Tool</h1>
+  <div id="welcomeContent">
+    <img src="images/оnfsb.jpg" alt="DES Illustration"
+         style="width: 100%; max-width: 1600px; display: block; margin: 20px auto;">
+
+  </div>
+  <div id="tutorialContainer" style="display: none; text-align: center; margin-top: 20px;">
+    <h3 id="tutorialTitle" style="font-size: 28px;">DES Tutorial</h3>
+    <video id="tutorialVideo"
+           width="960"
+           height="540"
+           style="display: block; margin: 0 auto 20px auto; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.3);"
+           preload="auto"
+           onended="this.pause(); this.currentTime = this.duration);">
+      <source src="images/knc.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+    <p id="stepDescription" style="max-width: 800px; margin: 10px auto; font-size: 25px; text-align: center;"></p>
+
+    <div style="margin-bottom: 10px;">
+      <button class="floating-button" onclick="playVideo()" style="font-size: 16px; padding: 10px 20px;">Start</button>
+    </div>
+    <div style="display: flex; justify-content: center; align-items: center; gap: 20px;">
+      <button class="floating-button" onclick="prevTutorialStep()" style="font-size: 16px; padding: 10px 20px;">Previous</button>
+      <span id="stepCounter" style="font-size: 25px;">Step 1 of 100</span>
+      <button class="floating-button" onclick="nextTutorialStep()" style="font-size: 16px; padding: 10px 20px;">Next</button>
+    </div>
+  </div>
+
+
+  <div id="quizContainer" class="quiz-box" style="display: none">
+    <div id="quizQuestion" class="quiz-question"></div>
+    <div id="quizOptions"></div>
+    <div id="quizFeedback" class="quiz-feedback"></div>
+    <button class="floating-button" onclick="nextQuizQuestion()" style="margin-top: 10px;">Next Question</button>
+  </div>
+</div>
+<div id="asciiTools" style="display: none; padding: 20px;">
+  <h2>ASCII Converter</h2>
+  <textarea id="asciiInput" rows="3" placeholder="Enter text..."></textarea>
+  <br>
+  <button onclick="convertToBinary()">Convert to Binary</button>
+  <pre id="binaryOutput"></pre>
+
+  <h2>ASCII Table</h2>
+  <table id="asciiTable" border="1" style="width: 100%; text-align: center;">
+    <thead>
+    <tr>
+      <th>Char</th>
+      <th>Decimal</th>
+      <th>Hex</th>
+      <th>Binary</th>
+    </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+
+<script>
+  const tutorialDescriptions = [
+    "Step 1: This is general scheme",
+    "Step 2: Encryption example.",
+    "Step 3: Block 1.",
+    "Step 4: Block key.",
+    "Step 5: Initial Permutation (IP)\n" +
+    "➤ Rearranges the bits of the 64-bit plaintext input according to a fixed table. This is a simple permutation and doesn't add actual security but prepares the block for processing.",
+    "Step 6: Split into Two Halves\n" +
+    "➤ After IP, the 64-bit block is split into L0 (left half) and R0 (right half), each 32 bits.",
+    "Step 7: PC-1 applies a fixed permutation to the 64-bit key, discarding every 8th bit (used for parity), resulting in a 56-bit key used for further processing.",
+    "Step 8: After PC-1, the 56-bit key is split into two halves:\n" +
+    "a left half (C0) and a right half (D0), each 28 bits. These halves will be shifted and combined in the next steps to generate subkeys.",
+    "Step 9: C0 and D0 are each shifted left by 1 bit to create C1 and D1.",
+    "Step 10: PC-2 chooses 48 bits from C1 and D1 to create the round key K1.",
+    "Step 11: E (Expansion) Permutation\n" +
+    "The 32-bit right half of the data block is expanded to 48 bits by duplicating specific bits. This prepares the data for mixing with the 48-bit round key.",
+    "Step 12: XOR with Round Key\n" +
+    "➤ The expanded right half is XORed with the round key K1 to combine key material with the data.",
+    "Step 13: S-Boxes (Substitution Boxes)\n" +
+    "➤ The 48-bit result is divided into 8 groups of 6 bits. Each group is input into an S-Box which outputs 4 bits, reducing 48 bits to 32.",
+    "Step 14: S-Boxes continue processing the input through fixed substitution tables to provide non-linearity.",
+    "Step 15: S-Boxes (continued). Each group of 6 bits results in a 4-bit output based on S-Box lookup.",
+    "Step 16: S-Boxes (continued). This substitution step is crucial for cryptographic strength.",
+    "Step 17: S-Boxes (continued). Final groups are processed and combined.",
+    "Step 18: S-Boxes complete. All 8 outputs are joined to form a 32-bit block.",
+    "Step 19: All 8 S-Boxes output their respective 4-bit blocks to form a 32-bit result.",
+    "Step 20: Output of S-Boxes is now ready for the next step.",
+    "Step 21: P (Permutation)\n" +
+    "The 32-bit result from the S-Boxes is permuted according to a fixed table to further diffuse the bits.",
+    "Step 22: XOR with L\n" +
+    "The permuted 32-bit block is XORed with the left half (L0), and the output becomes the new right half (R1).",
+    "Step 23: Switch Halves\n" +
+    "L1 = R0, R1 = result of XOR. These form inputs for the next round. This switching happens in rounds 1–15.",
+    "Step 24: Round 16\n" +
+    "In the final round, the switch of L and R is skipped. The output of the last round directly goes into the final permutation.",
+    "Step 25: Final Output\n" +
+    "All 16 rounds are completed. You now have the final L and R halves for the first 64-bit block.",
+    "Step 26: Final Cipher Block\n" +
+    "The result of round 16 is combined and sent to the final permutation step.",
+    "Step 27: Overview\n" +
+    "Displays the original plaintext and key used to generate the cipher.",
+    "Step 28: Starting Block 2\n" +
+    "The same encryption process begins for the second 64-bit block: Initial Permutation (IP) applied.",
+    "Step 29: Block 2 Status\n" +
+    "Shows result after 16 rounds of encryption for Block 2.",
+    "Step 30: Final Permutation for Block 2\n" +
+    "The output of round 16 undergoes the final IP⁻¹ permutation to produce the second cipher block.",
+    "Step 31: Final Output\n" +
+    "The encryption is complete. Cipher Block 1 and 2 are concatenated to form the final encrypted message."
+
+  ];
+
+  const questions = [
+    {
+      q: "What is the block size of DES?",
+      options: ["64 bits", "56 bits", "128 bits"],
+      answer: 0,
+      reason: "DES processes 64-bit blocks of data during encryption."
+    },
+    {
+      q: "How many rounds does DES use?",
+      options: ["8", "16", "32"],
+      answer: 1,
+      reason: "DES uses 16 rounds of processing for encryption."
+    },
+    {
+      q: "What is the key size of DES?",
+      options: ["64 bits", "56 bits", "48 bits"],
+      answer: 1,
+      reason: "DES uses a 56-bit key (out of a 64-bit input, 8 bits are for parity)."
+    },
+    {
+      q: "What type of cipher is DES?",
+      options: ["Stream cipher", "Block cipher", "Hash function"],
+      answer: 1,
+      reason: "DES is a symmetric block cipher."
+    },
+    {
+      q: "Is DES still considered secure for modern applications?",
+      options: ["Yes", "No"],
+      answer: 1,
+      reason: "DES is no longer secure due to its short key length and vulnerability to brute-force attacks."
+    },
+    // 5 new questions
+    {
+      q: "What does DES stand for?",
+      options: ["Data Encryption Standard", "Digital Encryption Standard", "Dynamic Encryption System"],
+      answer: 0,
+      reason: "DES stands for Data Encryption Standard."
+    },
+    {
+      q: "Which company originally developed DES?",
+      options: ["IBM", "Microsoft", "Intel"],
+      answer: 0,
+      reason: "IBM originally developed DES in the early 1970s."
+    },
+    {
+      q: "What is the main vulnerability of DES?",
+      options: ["Short key length", "Weak encryption algorithm", "No padding mechanism"],
+      answer: 0,
+      reason: "The main vulnerability of DES is its short 56-bit key length."
+    },
+    {
+      q: "Which of the following is a variant of DES?",
+      options: ["3DES", "AES", "RSA"],
+      answer: 0,
+      reason: "3DES is a variant of DES that applies the DES algorithm three times for enhanced security."
+    },
+    {
+      q: "In DES, what does the 'S' in 'DES' stand for?",
+      options: ["Standard", "System", "Security"],
+      answer: 0,
+      reason: "The 'S' in DES stands for Standard, referring to the Data Encryption Standard."
+    }
+  ];
+
+  let quizIndex = 0;
+
+  function toggleQuiz() {
+    const quiz = document.getElementById("quizContainer");
+    quiz.style.display = quiz.style.display === "none" ? "block" : "none";
+    loadQuestion();
+  }
+
+  function loadQuestion() {
+    const q = questions[quizIndex];
+    document.getElementById("quizQuestion").textContent = q.q;
+    const optionsDiv = document.getElementById("quizOptions");
+    const feedback = document.getElementById("quizFeedback");
+    optionsDiv.innerHTML = '';
+    feedback.textContent = '';
+    q.options.forEach((opt, idx) => {
+      const btn = document.createElement("div");
+      btn.textContent = opt;
+      btn.className = "quiz-option";
+      btn.onclick = () => {
+        document.querySelectorAll(".quiz-option").forEach(el => el.classList.remove("correct", "incorrect"));
+        if (idx === q.answer) {
+          btn.classList.add("correct");
+          feedback.textContent = q.reason;
+        } else {
+          btn.classList.add("incorrect");
+          document.querySelectorAll(".quiz-option")[q.answer].classList.add("correct");
+          feedback.textContent = q.reason;
+        }
+      };
+      optionsDiv.appendChild(btn);
+    });
+  }
+
+  function nextQuizQuestion() {
+    quizIndex = (quizIndex + 1) % questions.length;
+    loadQuestion();
+  }
+
+  let currentTutorialStep = 1;
+  function nextTutorialStep() {
+    if (currentTutorialStep < 31) currentTutorialStep++;
+    showTutorialStep(currentTutorialStep);
+  }
+  function prevTutorialStep() {
+    if (currentTutorialStep > 1) currentTutorialStep--;
+    showTutorialStep(currentTutorialStep);
+  }
+  function showTutorialStep(step) {
+    const video = document.getElementById("tutorialVideo");
+    const source = video.querySelector("source");
+    source.src = `images/step${step}.mp4`;
+    video.load();
+    document.getElementById("stepCounter").textContent = `Step ${step} of 31`;
+    document.getElementById("stepDescription").textContent = tutorialDescriptions[step - 1] || '';
+  }
+
+
+  function openTutorial() {
+    document.getElementById("tutorialContainer").style.display = 'block';
+    document.getElementById("welcomeContent").style.display = 'none'; // <-- добавь эту строку
+    showTutorialStep(currentTutorialStep);
+  }
+  function playVideo() {
+    const video = document.getElementById("tutorialVideo");
+    video.play();
+  }
+  function openTheory() {
+    window.open("theory.html", "_blank");
+  }
+  function toggleAsciiTools() {
+    document.getElementById("asciiTools").style.display =
+      document.getElementById("asciiTools").style.display === "none" ? "block" : "none";
+    generateAsciiTable();
+  }
+
+  function convertToBinary() {
+    const text = document.getElementById("asciiInput").value;
+    const binary = text
+      .split("")
+      .map(char => char.charCodeAt(0).toString(2).padStart(8, "0"))
+      .join(" ");
+    document.getElementById("binaryOutput").textContent = binary;
+  }
+
+  function generateAsciiTable() {
+    const tbody = document.querySelector("#asciiTable tbody");
+    if (tbody.children.length > 0) return; // уже сгенерировано
+    for (let i = 32; i <= 126; i++) {
+      const char = String.fromCharCode(i);
+      const dec = i;
+      const hex = i.toString(16).toUpperCase().padStart(2, "0");
+      const bin = i.toString(2).padStart(8, "0");
+      const row = `<tr><td>${char}</td><td>${dec}</td><td>${hex}</td><td>${bin}</td></tr>`;
+      tbody.innerHTML += row;
+    }
+  }
+
+
+  function openInformation() {
+    window.open("information.html", "_blank");
+  }
+
+  let language = 'en';
+  function setLanguage(lang) {
+    language = lang;
+    document.getElementById('languageSelector').value = lang;
+    document.getElementById('title').textContent = language === 'en' ? 'DES Visual Educational Tool' : 'Визуальный инструмент обучения DES';
+    document.getElementById('tutorialTitle').textContent = language === 'en' ? 'DES Tutorial' : 'Учебник DES';
+    if (language === 'ru') {
+      questions[0].q = "Какой размер блока у DES?";
+      questions[0].options = ["64 бита", "56 бит", "128 бит"];
+      questions[0].reason = "DES обрабатывает 64-битные блоки данных во время шифрования.";
+      questions[1].q = "Сколько раундов использует DES?";
+      questions[1].options = ["8", "16", "32"];
+      questions[1].reason = "DES использует 16 раундов обработки для шифрования.";
+      questions[2].q = "Какой размер ключа у DES?";
+      questions[2].options = ["64 бита", "56 бит", "48 бит"];
+      questions[2].reason = "DES использует 56-битный ключ (из 64 бит 8 используются для четности).";
+      questions[3].q = "Какой тип шифра представляет DES?";
+      questions[3].options = ["Потоковый шифр", "Блочный шифр", "Хеш-функция"];
+      questions[3].reason = "DES — это симметричный блочный шифр.";
+      questions[4].q = "Является ли DES безопасным для современных приложений?";
+      questions[4].options = ["Да", "Нет"];
+      questions[4].reason = "DES больше не считается безопасным из-за короткой длины ключа и уязвимости к атакам перебора.";
+      // Updated questions in Russian
+      questions[5].q = "Что означает DES?";
+      questions[5].options = ["Стандарт шифрования данных", "Цифровой стандарт шифрования", "Динамическая система шифрования"];
+      questions[5].reason = "DES означает Стандарт шифрования данных.";
+      questions[6].q = "Какая компания первоначально разработала DES?";
+      questions[6].options = ["IBM", "Microsoft", "Intel"];
+      questions[6].reason = "DES был разработан компанией IBM в начале 1970-х годов.";
+      questions[7].q = "Какая основная уязвимость DES?";
+      questions[7].options = ["Короткая длина ключа", "Слабый алгоритм шифрования", "Отсутствие механизма дополнения"];
+      questions[7].reason = "Основная уязвимость DES — это короткая длина ключа 56 бит.";
+      questions[8].q = "Какой из следующих вариантов является производным от DES?";
+      questions[8].options = ["3DES", "AES", "RSA"];
+      questions[8].reason = "3DES является производным от DES, который использует алгоритм DES трижды для усиленной безопасности.";
+      questions[9].q = "Что означает 'S' в DES?";
+      questions[9].options = ["Стандарт", "Система", "Безопасность"];
+      questions[9].reason = "Буква 'S' в DES означает Стандарт, что обозначает Стандарт шифрования данных.";
+    } else {
+      questions[0].q = "What is the block size of DES?";
+      questions[0].options = ["64 bits", "56 bits", "128 bits"];
+      questions[0].reason = "DES processes 64-bit blocks of data during encryption.";
+      questions[1].q = "How many rounds does DES use?";
+      questions[1].options = ["8", "16", "32"];
+      questions[1].reason = "DES uses 16 rounds of processing for encryption.";
+      questions[2].q = "What is the key size of DES?";
+      questions[2].options = ["64 bits", "56 bits", "48 bits"];
+      questions[2].reason = "DES uses a 56-bit key (out of a 64-bit input, 8 bits are for parity).";
+      questions[3].q = "What type of cipher is DES?";
+      questions[3].options = ["Stream cipher", "Block cipher", "Hash function"];
+      questions[3].reason = "DES is a symmetric block cipher.";
+      questions[4].q = "Is DES still considered secure for modern applications?";
+      questions[4].options = ["Yes", "No"];
+      questions[4].reason = "DES is no longer secure due to its short key length and vulnerability to brute-force attacks.";
+      // Updated questions in English
+      questions[5].q = "What does DES stand for?";
+      questions[5].options = ["Data Encryption Standard", "Digital Encryption Standard", "Dynamic Encryption System"];
+      questions[5].reason = "DES stands for Data Encryption Standard.";
+      questions[6].q = "Which company originally developed DES?";
+      questions[6].options = ["IBM", "Microsoft", "Intel"];
+      questions[6].reason = "IBM originally developed DES in the early 1970s.";
+      questions[7].q = "What is the main vulnerability of DES?";
+      questions[7].options = ["Short key length", "Weak encryption algorithm", "No padding mechanism"];
+      questions[7].reason = "The main vulnerability of DES is its short 56-bit key length.";
+      questions[8].q = "Which of the following is a variant of DES?";
+      questions[8].options = ["3DES", "AES", "RSA"];
+      questions[8].reason = "3DES is a variant of DES that applies the DES algorithm three times for enhanced security.";
+      questions[9].q = "In DES, what does the 'S' in 'DES' stand for?";
+      questions[9].options = ["Standard", "System", "Security"];
+      questions[9].reason = "The 'S' in DES stands for Standard, referring to the Data Encryption Standard.";
+    }
+    if (document.getElementById("quizContainer").style.display === 'block') {
+      loadQuestion();
+    }
+  }
+</script>
+</body>
+</html>
